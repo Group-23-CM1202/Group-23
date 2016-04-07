@@ -1,7 +1,11 @@
 import tkinter as tk
 import randomCountingQuestionGenerator as rQG
 import logicQuestGet as QG
+from pymysql import connect, err, sys, cursors
 from random import shuffle
+
+conn = connect("csmysql.cs.cf.ac.uk", user = 'c1455582', passwd = 'jzgwyT8pK', db = 'c1455582')
+cur = conn.cursor()
 
 class testApp(tk.Tk):
 
@@ -17,7 +21,7 @@ class testApp(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Submit):
+        for F in (User,Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Submit):
             page_name = F.__name__
             frame = F(container, self)
             self.frames[page_name] = frame
@@ -27,7 +31,7 @@ class testApp(tk.Tk):
             # will be the one that is visible.
             frame.grid(row=0, column=0, sticky="nsew")
 
-        self.show_frame("Q1")
+        self.show_frame("User")
 
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''
@@ -35,7 +39,8 @@ class testApp(tk.Tk):
         frame.tkraise()
 
 questions = QG.whichQuest()
-
+lessonName = '002'
+User = ''
 QA1 = ''
 A1 = QG.getCorrectAnswer(questions[0])
 QA2 = ''
@@ -59,6 +64,36 @@ A10 = QG.getCorrectAnswer(questions[9])
 
 i = 0
 
+class User(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        top = tk.Frame(self)
+        top.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        L1 = tk.Label(self, text="Student ID")
+        L1.pack(in_=top, side=tk.LEFT)
+        self.username = tk.Entry(self, bd=5)
+        self.username.pack(in_=top, side=tk.RIGHT)
+        bottom = tk.Frame(self)
+        bottom.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+        submit = tk.Button(self, text='Submit', command=self.submit)
+        submit.pack(in_=bottom, side=tk.RIGHT)
+        self.label = tk.Label(self)
+        self.label.pack(in_=bottom, side=tk.RIGHT)
+
+
+    def submit(self):
+        global User
+        ID = self.username.get()
+        if len(ID) != 8:
+            self.label.config(text="Invalid ID")
+        elif (ID[1:]).isdigit() != True:
+            self.label.config(text="Invalid ID")
+        else:
+            User = ID
+            self.controller.show_frame("Q1")
+
+
 class Q1(tk.Frame):
     def __init__(self, parent, controller):
         global questions
@@ -81,10 +116,7 @@ class Q1(tk.Frame):
         R4.pack(anchor=tk.W)
         bottom = tk.Frame(self)
         bottom.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-        Next = tk.Button(self, text="Next",
-                         command=lambda: controller.show_frame("Q2"))
-        Confirm = tk.Button(self, text="Confirm", command=self.confirm)
-        Confirm.pack(in_=bottom, side=tk.LEFT)
+        Next = tk.Button(self, text="Next", command=self.confirm)
         Next.pack(in_=bottom, side=tk.RIGHT)
         print(questions[0])
 
@@ -92,6 +124,7 @@ class Q1(tk.Frame):
         global QA1
         QA1 = self.intVar.get()
         print (QA1)
+        self.controller.show_frame("Q2")
 
 
 
@@ -119,12 +152,9 @@ class Q2(tk.Frame):
         R4.pack(anchor=tk.W)
         bottom = tk.Frame(self)
         bottom.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-        Next = tk.Button(self, text="Next",
-                         command=lambda: controller.show_frame("Q3"))
         Back = tk.Button(self, text="Back",
                          command=lambda: controller.show_frame("Q1"))
-        Confirm = tk.Button(self, text="Confirm", command=self.confirm)
-        Confirm.pack(in_=bottom, side=tk.LEFT)
+        Next = tk.Button(self, text="Next", command=self.confirm)
         Next.pack(in_=bottom, side=tk.RIGHT)
         Back.pack(in_=bottom, side=tk.RIGHT)
         print(questions[1])
@@ -133,6 +163,7 @@ class Q2(tk.Frame):
         global QA2
         QA2 = self.intVar.get()
         print(QA2)
+        self.controller.show_frame("Q3")
 
 
 
@@ -159,12 +190,9 @@ class Q3(tk.Frame):
         R4.pack(anchor=tk.W)
         bottom = tk.Frame(self)
         bottom.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-        Next = tk.Button(self, text="Next",
-                         command=lambda: controller.show_frame("Q4"))
         Back = tk.Button(self, text="Back",
                          command=lambda: controller.show_frame("Q2"))
-        Confirm = tk.Button(self, text="Confirm", command=self.confirm)
-        Confirm.pack(in_=bottom, side=tk.LEFT)
+        Next = tk.Button(self, text="Next", command=self.confirm)
         Next.pack(in_=bottom, side=tk.RIGHT)
         Back.pack(in_=bottom, side=tk.RIGHT)
         print(questions[2])
@@ -173,6 +201,7 @@ class Q3(tk.Frame):
         global QA3
         QA3 = self.intVar.get()
         print(QA3)
+        self.controller.show_frame("Q4")
 
 
 
@@ -199,12 +228,9 @@ class Q4(tk.Frame):
         R4.pack(anchor=tk.W)
         bottom = tk.Frame(self)
         bottom.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-        Next = tk.Button(self, text="Next",
-                         command=lambda: controller.show_frame("Q5"))
         Back = tk.Button(self, text="Back",
                          command=lambda: controller.show_frame("Q3"))
-        Confirm = tk.Button(self, text="Confirm", command=self.confirm)
-        Confirm.pack(in_=bottom, side=tk.LEFT)
+        Next = tk.Button(self, text="Next", command=self.confirm)
         Next.pack(in_=bottom, side=tk.RIGHT)
         Back.pack(in_=bottom, side=tk.RIGHT)
         print(questions[3])
@@ -213,6 +239,7 @@ class Q4(tk.Frame):
         global QA4
         QA4 = self.intVar.get()
         print(QA4)
+        self.controller.show_frame("Q5")
 
 
 
@@ -240,12 +267,9 @@ class Q5(tk.Frame):
         R4.pack(anchor=tk.W)
         bottom = tk.Frame(self)
         bottom.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-        Next = tk.Button(self, text="Next",
-                         command=lambda: controller.show_frame("Q6"))
         Back = tk.Button(self, text="Back",
                          command=lambda: controller.show_frame("Q4"))
-        Confirm = tk.Button(self, text="Confirm", command=self.confirm)
-        Confirm.pack(in_=bottom, side=tk.LEFT)
+        Next = tk.Button(self, text="Next", command=self.confirm)
         Next.pack(in_=bottom, side=tk.RIGHT)
         Back.pack(in_=bottom, side=tk.RIGHT)
         print(questions[4])
@@ -254,6 +278,7 @@ class Q5(tk.Frame):
         global QA5
         QA5 = self.intVar.get()
         print(QA5)
+        self.controller.show_frame("Q6")
 
 
 
@@ -280,12 +305,9 @@ class Q6(tk.Frame):
         R4.pack(anchor=tk.W)
         bottom = tk.Frame(self)
         bottom.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-        Next = tk.Button(self, text="Next",
-                         command=lambda: controller.show_frame("Q7"))
         Back = tk.Button(self, text="Back",
                          command=lambda: controller.show_frame("Q5"))
-        Confirm = tk.Button(self, text="Confirm", command=self.confirm)
-        Confirm.pack(in_=bottom, side=tk.LEFT)
+        Next = tk.Button(self, text="Next", command=self.confirm)
         Next.pack(in_=bottom, side=tk.RIGHT)
         Back.pack(in_=bottom, side=tk.RIGHT)
         print(questions[5])
@@ -294,6 +316,7 @@ class Q6(tk.Frame):
         global QA6
         QA6 = self.intVar.get()
         print(QA6)
+        self.controller.show_frame("Q7")
 
 
 
@@ -321,12 +344,9 @@ class Q7(tk.Frame):
         R4.pack(anchor=tk.W)
         bottom = tk.Frame(self)
         bottom.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-        Next = tk.Button(self, text="Next",
-                         command=lambda: controller.show_frame("Q8"))
         Back = tk.Button(self, text="Back",
                          command=lambda: controller.show_frame("Q6"))
-        Confirm = tk.Button(self, text="Confirm", command=self.confirm)
-        Confirm.pack(in_=bottom, side=tk.LEFT)
+        Next = tk.Button(self, text="Next", command=self.confirm)
         Next.pack(in_=bottom, side=tk.RIGHT)
         Back.pack(in_=bottom, side=tk.RIGHT)
         print(questions[6])
@@ -335,6 +355,7 @@ class Q7(tk.Frame):
         global QA7
         QA7 = self.intVar.get()
         print(QA7)
+        self.controller.show_frame("Q8")
 
 
 class Q8(tk.Frame):
@@ -360,12 +381,9 @@ class Q8(tk.Frame):
         R4.pack(anchor=tk.W)
         bottom = tk.Frame(self)
         bottom.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-        Next = tk.Button(self, text="Next",
-                         command=lambda: controller.show_frame("Q9"))
         Back = tk.Button(self, text="Back",
                          command=lambda: controller.show_frame("Q7"))
-        Confirm = tk.Button(self, text="Confirm", command=self.confirm)
-        Confirm.pack(in_=bottom, side=tk.LEFT)
+        Next = tk.Button(self, text="Next", command=self.confirm)
         Next.pack(in_=bottom, side=tk.RIGHT)
         Back.pack(in_=bottom, side=tk.RIGHT)
         print(questions[7])
@@ -374,6 +392,7 @@ class Q8(tk.Frame):
         global QA8
         QA8 = self.intVar.get()
         print(QA8)
+        self.controller.show_frame("Q9")
 
 
 
@@ -401,12 +420,9 @@ class Q9(tk.Frame):
         R4.pack(anchor=tk.W)
         bottom = tk.Frame(self)
         bottom.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-        Next = tk.Button(self, text="Next",
-                         command=lambda: controller.show_frame("Q10"))
         Back = tk.Button(self, text="Back",
                          command=lambda: controller.show_frame("Q8"))
-        Confirm = tk.Button(self, text="Confirm", command=self.confirm)
-        Confirm.pack(in_=bottom, side=tk.LEFT)
+        Next = tk.Button(self, text="Next", command=self.confirm)
         Next.pack(in_=bottom, side=tk.RIGHT)
         Back.pack(in_=bottom, side=tk.RIGHT)
         print(questions[8])
@@ -415,6 +431,7 @@ class Q9(tk.Frame):
         global QA9
         QA9 = self.intVar.get()
         print(QA9)
+        self.controller.show_frame("Q10")
 
 
 
@@ -442,13 +459,9 @@ class Q10(tk.Frame):
         R4.pack(anchor=tk.W)
         bottom = tk.Frame(self)
         bottom.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-
         Back = tk.Button(self, text="Back",
                          command=lambda: controller.show_frame("Q9"))
-        Submit = tk.Button(self, text="Submit",
-                           command=lambda: controller.show_frame("Submit"))
-        Confirm = tk.Button(self, text="Confirm", command=self.confirm)
-        Confirm.pack(in_=bottom, side=tk.LEFT)
+        Submit = tk.Button(self, text="Submit", command=self.confirm)
         Submit.pack(in_=bottom,side=tk.RIGHT)
         Back.pack(in_=bottom, side=tk.RIGHT)
         print(questions[9])
@@ -458,6 +471,7 @@ class Q10(tk.Frame):
         global QA10
         QA10 = self.intVar.get()
         print(QA10)
+        self.controller.show_frame("Submit")
 
 
 class Submit(tk.Frame):
@@ -525,6 +539,8 @@ class Submit(tk.Frame):
             print("incorrect")
         answertext = "You got " + str(i) + " correct"
         self.label.config(text=answertext)
+        cur.execute("INSERT INTO TestScores(ID, TestID, Score) VALUES (%s, %s, %s)", (User, lessonName, int(i)))
+        conn.commit()
 
 
 if __name__ == "__main__":

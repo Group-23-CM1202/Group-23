@@ -22,6 +22,4 @@ def getAnswersShuffled(number):
     shuffle(a)
     return (a)
 
-def lengthOfNonRand():
-    return (len(data))
 
