@@ -1,6 +1,7 @@
 import tkinter as tk
 import randomCountingQuestionGenerator as rQG
 import countQuestGet as QG
+import getLesson as GL
 from pymysql import connect, err, sys, cursors
 from random import shuffle
 
@@ -21,7 +22,7 @@ class testApp(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (User, Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Submit):
+        for F in (User, lessonPart1, lessonPart2, Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Submit):
             page_name = F.__name__
             frame = F(container, self)
             self.frames[page_name] = frame
@@ -38,7 +39,10 @@ class testApp(tk.Tk):
         frame = self.frames[page_name]
         frame.tkraise()
 
-lessonName = '001'
+
+
+lesson = GL.getLessonContent(2)
+lessonName = str(GL.getLessonID(2))
 User = ''
 QA1 = ''
 A1 = QG.getCorrectAnswer(1)
@@ -62,6 +66,45 @@ QA10 = ''
 A10 = 'python'
 
 i = 0
+
+class lessonPart1(tk.Frame):
+    def __init__(self, parent, controller):
+        global lesson
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        top = tk.Frame(self)
+        top.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        photo = tk.PhotoImage(file=lesson[0])
+        panel = tk.Label(self, image = photo)
+        panel.image = photo
+        panel.pack(in_=top)
+        bottom = tk.Frame(self)
+        bottom.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+        Next = tk.Button(self, text="Next",
+                         command=lambda: controller.show_frame("lessonPart2"))
+        Next.pack(in_=bottom, side=tk.RIGHT)
+
+
+
+class lessonPart2(tk.Frame):
+    def __init__(self, parent, controller):
+        global lesson
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        top = tk.Frame(self)
+        top.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        photo = tk.PhotoImage(file=lesson[1])
+        panel = tk.Label(self, image=photo)
+        panel.image = photo
+        panel.pack(in_=top)
+        bottom = tk.Frame(self)
+        bottom.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+        Next = tk.Button(self, text="Test",
+                         command=lambda: controller.show_frame("Q1"))
+        Next.pack(in_=bottom, side=tk.RIGHT)
+        Back = tk.Button(self, text="Back",
+                         command=lambda: controller.show_frame("lessonPart1"))
+        Back.pack(in_=bottom, side=tk.RIGHT)
 
 
 class User(tk.Frame):
@@ -91,7 +134,7 @@ class User(tk.Frame):
             self.label.config(text="Invalid ID")
         else:
             User = ID
-            self.controller.show_frame("Q1")
+            self.controller.show_frame("lessonPart1")
 
 
 class Q1(tk.Frame):

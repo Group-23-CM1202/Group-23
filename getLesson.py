@@ -21,7 +21,6 @@ def getLessonName(ID):
 
 def getLessonContent(ID):
     ID -= 1
-    return (data[ID][2])
+    part = data[ID][2].split(' ')
+    return (part)
 
-
-print (getLessonContent(1))
