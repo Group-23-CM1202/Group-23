@@ -2,6 +2,7 @@ import tkinter as tk
 import randomCountingQuestionGenerator as rQG
 import logicQuestGet as QG
 import getLesson as GL
+import dbTestresults as Test
 from pymysql import connect, err, sys, cursors
 from random import shuffle
 from PIL import ImageTk, Image
@@ -43,6 +44,7 @@ class testApp(tk.Tk):
 lesson = GL.getLessonContent(1)
 questions = QG.whichQuest()
 lessonName = str(GL.getLessonID(1))
+Name = ''
 User = ''
 QA1 = ''
 A1 = QG.getCorrectAnswer(questions[0])
@@ -117,10 +119,16 @@ class User(tk.Frame):
         self.controller = controller
         top = tk.Frame(self)
         top.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        top2 = tk.Frame(self)
+        top2.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
         L1 = tk.Label(self, text="Student ID")
         L1.pack(in_=top, side=tk.LEFT)
         self.username = tk.Entry(self, bd=5)
         self.username.pack(in_=top, side=tk.RIGHT)
+        L2 = tk.Label(self, text="Name")
+        L2.pack(in_=top2, side=tk.LEFT)
+        self.Name = tk.Entry(self, bd=5)
+        self.Name.pack(in_=top2, side=tk.RIGHT)
         bottom = tk.Frame(self)
         bottom.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
         submit = tk.Button(self, text='Submit', command=self.submit)
@@ -130,14 +138,17 @@ class User(tk.Frame):
 
 
     def submit(self):
+        global Name
         global User
         ID = self.username.get()
+        Name = self.Name.get()
         if len(ID) != 8:
             self.label.config(text="Invalid ID")
         elif (ID[1:]).isdigit() != True:
             self.label.config(text="Invalid ID")
         else:
             User = ID
+            Name = Name
             self.controller.show_frame("lessonPart1")
 
 
@@ -586,8 +597,7 @@ class Submit(tk.Frame):
             print("incorrect")
         answertext = "You got " + str(i) + " correct"
         self.label.config(text=answertext)
-        cur.execute("INSERT INTO TestScores(ID, TestID, Score) VALUES (%s, %s, %s)", (User, lessonName, int(i)))
-        conn.commit()
+        Test.insert(str(Name), str(User), int(lessonName), int(i))
 
 
 if __name__ == "__main__":
