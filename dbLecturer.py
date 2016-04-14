@@ -4,8 +4,8 @@ cursor=conn.cursor()
 cursor.execute("SELECT * FROM Lecturer")
 data=cursor.fetchall()
 
-myQuery ='INSERT INTO Student VALUES (%s, %s, %s)'	
-cursor.execute(myQuery, ('Lecturer Name', 'Module','e-mail'))
+myQuery ='INSERT INTO Lecturer VALUES (%s, %s, %s, %s)'	
+cursor.execute(myQuery, ('Lecturer Name', 'Module', 'e-mail', 'Pass'))
 conn.commit()
 print(data)
 
