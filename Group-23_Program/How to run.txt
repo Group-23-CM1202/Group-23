@@ -1,0 +1,2 @@
+1. Extract files
+2. Run from cmd using 'python Main.py'
