@@ -1,2 +1,4 @@
 1. Extract files
+Requires PyMySQL
+Requires tkinter
 2. Run from cmd using 'python Main.py'
